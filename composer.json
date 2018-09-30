@@ -1,7 +1,6 @@
 {
     "name": "kevensuu/codercalendar",
     "description": "coder lucky calendar",
-    "license": "MIT License",
     "minimum-stability": "dev",
     "require": {},
     "autoload": {

@@ -45,33 +45,27 @@ class Lucky
         ["name" => "上AB站", "good" => "还需要理由吗？", "bad" => "会被老板看到"],
     ];
 
-    protected $specials = [
-        ["date"=>20130221, "type"=>'good', "name"=>'防核演习', "description"=>'万一哪个疯子丢颗核弹过来...']
-    ];
-
-    protected $tools = ["Eclipse写程序", "MSOffice写文档", "记事本写程序", "Windows8", "Linux", "MacOS", "IE", "Android设备", "iOS设备"];
-
-    protected $varNames = ["jieguo", "huodong", "pay", "expire", "zhangdan", "every", "free", "i1", "a", "virtual", "ad", "spider", "mima", "pass", "ui"];
-
     protected $drinks = ["水","茶","红茶","绿茶","咖啡","奶茶","可乐","牛奶","豆奶","果汁","果味汽水","苏打水","运动饮料","酸奶","酒"];
 
-    public function __construct()
+    public static function today($currentTime)
     {
-        $this->ctime = time();
-        $this->cday = date('Ymd', $this->ctime);
+        return (new static())->assembleData($currentTime);
     }
 
-    public static function pickTodaysLuck()
+    protected function assembleData($currentTime)
     {
-        $data = [];
-        $data['date'] = "今天是".date('Y年m月d日', (new static())->ctime)."星期".(new static())->weeks[date('w', (new static())->ctime)];
-        $data['direction_value'] = (new static())->directions[(new static())->random((new static())->cday, 2) % count((new static())->directions)];
-        $data['drink_value'] = implode(',', (new static())->pickRandom((new static())->drinks, 2));
-        $data['goddes_value'] = (new static())->random((new static())->cday, 6) % 50 / 10.0;
+        $this->ctime = $currentTime ? $currentTime : time();
+        $this->cday = date('Ymd', $this->ctime);
 
-        $numGood = (new static())->random((new static())->cday, 98) % 3 + 2;
-        $numBad = (new static())->random((new static())->cday, 87) % 3 + 2;
-        $eventArr = (new static())->pickRandom((new static())->activities, ($numGood + $numBad));
+        $data = [];
+        $data['date'] = $this->todayDesc();
+        $data['direction_value'] = $this->directionValue();
+        $data['drink_value'] = $this->drinkValue();
+        $data['goddes_value'] = $this->goddesValue();
+
+        $numGood = $this->random($this->cday, 98) % 3 + 2;
+        $numBad = $this->random($this->cday, 87) % 3 + 2;
+        $eventArr = $this->pickRandom($this->activities, ($numGood + $numBad));
 
         $goods = array_slice($eventArr, 0, $numGood);
         $bads = array_slice($eventArr, $numGood, $numBad);
@@ -92,6 +86,26 @@ class Lucky
         $data['bads_list'] = $bads;
 
         return $data;
+    }
+
+    protected function todayDesc()
+    {
+        return "今天是".date('Y年n月d日', $this->ctime)." 星期".$this->weeks[date('w', $this->ctime)];
+    }
+
+    protected function directionValue()
+    {
+        return $this->directions[$this->random($this->cday, 2) % count($this->directions)];
+    }
+
+    protected function drinkValue()
+    {
+        return implode(',', $this->pickRandom($this->drinks, 2));
+    }
+
+    protected function goddesValue()
+    {
+        return $this->random($this->cday, 6) % 50 / 10.0;
     }
 
     protected function random($dayseed, $indexseed)
