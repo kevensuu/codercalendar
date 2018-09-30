@@ -13,6 +13,6 @@ use CoderCalendar\Lucky;
 Lucky::day();
 ```
 
-传送门 http://test.codercto.com/tool/codercalendar.html
+传送门 https://www.codercto.com/tool/codercalendar.html
 
 > PHP 版 程序员老黄历 参照 js 版制作
