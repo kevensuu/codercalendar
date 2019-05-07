@@ -45,6 +45,8 @@ class Lucky
         ["name" => "上AB站", "good" => "还需要理由吗？", "bad" => "会被老板看到"],
     ];
 
+    protected $no996 = ["name" => "拒绝996", "good" => "休息，不加班", "bad" => "不宜加班"];
+
     protected $drinks = ["水","茶","红茶","绿茶","咖啡","奶茶","可乐","牛奶","豆奶","果汁","果味汽水","苏打水","运动饮料","酸奶","酒"];
 
     public static function day($currentTime=0)
@@ -56,6 +58,8 @@ class Lucky
     {
         $this->ctime = $currentTime ? $currentTime : time();
         $this->cday = date('Ymd', $this->ctime);
+
+        $weekDay = date('N', $this->ctime);
 
         $data = [];
         $data['date'] = $this->todayDesc();
@@ -69,6 +73,14 @@ class Lucky
 
         $goods = array_slice($eventArr, 0, $numGood);
         $bads = array_slice($eventArr, $numGood, $numBad);
+
+        if(in_array($weekDay, [6,7]))
+        {
+            $goods = $bads =  [];
+            $goods[] = $this->no996;
+            $bads[] = $this->no996;
+        }
+
         foreach ($goods as &$value)
         {
             $value['desc'] = $value['good'];
